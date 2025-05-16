@@ -10,9 +10,9 @@
     <link rel="stylesheet" href="{% static 'app/css/style.css' %}">
   </head>
   <body>
-    <ul class="nav nav-tabs">
+    <ul class="nav nav-tabs justify-content-center">
         <li class="nav-item">
-            <a class="nav-link {% if request.path == '/' %}active{% endif %}" href="{% url 'index' %}">Strona główna</a>
+            <a class="nav-link {% if request.path == '/' %}active{% endif %}" href="{% url 'index' %}">Parametry</a>
         </li>
         <li class="nav-item">
             <a class="nav-link {% if request.path == '/info/' %}active{% endif %}" href="{% url 'info' %}">Informacje o odlewie</a>
@@ -21,7 +21,20 @@
             <a class="nav-link {% if request.path == '/charts/' %}active{% endif %}" href="{% url 'charts' %}">Wykresy temperatury</a>
         </li>
     </ul>
+
+    <div class="container mt-4">
+      <label for="refreshInterval">Wybierz interwał odświeżania stron:</label>
+      <select class="form-select small-select" id="refreshInterval">
+          <option value="0">Wyłącz</option>
+          <option value="5000">Co 5 sekund</option>
+          <option value="10000">Co 10 sekund</option>
+          <option value="60000">Co 1 minuta</option>
+      </select>
+  </div>
     
+    <div id="alertBox" class="alert alert-danger d-none" role="alert">
+      Uwaga! Temperatura przekroczyła bezpieczny limit!
+    </div>
 
     {% block content %}
     {% endblock %}
@@ -34,5 +47,7 @@
 
     <!-- bootstrap js-->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <!-- własny js-->
+    <script src="{% static 'app/js/script.js' %}"></script>
 </body>
 </html>
