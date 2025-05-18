@@ -1,0 +1,25 @@
+
+.container-chart {
+  max-width: 1200px;
+  height: 800px;
+  margin: 40px auto;
+  padding: 2rem 3rem;
+  border: 1px solid #d1d5db;
+  border-radius: 1rem;
+  background-color: #f3f4f6;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.canvas-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center; /* WYŚRODKOWANIE W POZIOMIE */
+  align-items: center;     /* WYŚRODKOWANIE W PIONIE (opcjonalnie) */
+}
+
+canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+

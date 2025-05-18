@@ -1,10 +1,15 @@
 {% extends "app/base.html" %}
+{% load static %}
 
-{% block title %} Home page {% endblock %}
+{% block title %} Info page {% endblock %}
+
+{% block css %}<link rel="stylesheet" href="{% static 'app/css/info.css' %}">{% endblock %}
 
 {% block content %}
 
-<h1>Info!</h1>
-
-<h4>historia temperatur dla każdego odlewu wpisując dane rfid</h4>
+<div class='search-data'>
+  <label for="exampleDataList" class="form-label">Type UID Cast</label>
+<input class="form-control" list="datalistOptions" id="exampleDataList" placeholder="Wpisz, aby wyszukać...">
+  <button type="button" class="btn btn-primary btn-lg d-block mx-auto custom-button">Znajdź informacje</button>
+</div>
 {% endblock %}

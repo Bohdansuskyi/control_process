@@ -1,10 +1,19 @@
 {% extends "app/base.html" %}
-
-{% block title %} Home page {% endblock %}
+{% load static %}
+{% block title %} Chart page {% endblock %}
 
 {% block content %}
 
-<h1>Wykresy!</h1>
+<div class='container-chart'>
+    <div class="canvas-container">
+      <canvas id="Charttemperature"></canvas>  
+    </div>
+</div>
 
-<h4>Wykresy z teraźniejszych oraz historycznych</h4>
+<!-- biblioteka chart js-->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- własny chart js-->
+    <script src="{% static 'app/js/chart.js' %}"></script>
+  
 {% endblock %}
