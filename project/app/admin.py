@@ -1,3 +1,7 @@
 from django.contrib import admin
+from .models import station,parts,records
 
-# Register your models here.
+# register model in admin panel
+admin.site.register(station)
+admin.site.register(parts)
+admin.site.register(records)
