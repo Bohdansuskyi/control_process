@@ -1,6 +1,6 @@
 // skrypt alarmu przekroczenia limitów temperatury
-let temperatura = 85; 
-        let limit = 80;
+/*let temperatura; // dodam wartości temperatury
+        let limit; // dodam limity
 
         function Temperature_check(temp) {
             const alertBox = document.getElementById('alertBox');
@@ -12,6 +12,7 @@ let temperatura = 85;
         }
 
 Temperature_check(temperatura);
+*/
 
 // skrypt odświeżania stron
 let refreshTimer = null;

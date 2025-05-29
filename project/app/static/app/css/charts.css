@@ -1,7 +1,7 @@
 
 .container-chart {
   max-width: 1200px;
-  height: 800px;
+  height: 1000px; 
   margin: 40px auto;
   padding: 2rem 3rem;
   border: 1px solid #d1d5db;
@@ -12,14 +12,13 @@
 
 .canvas-container {
   width: 100%;
-  height: 100%;
+  height: 900px; 
   display: flex;
-  justify-content: center; /* WYŚRODKOWANIE W POZIOMIE */
-  align-items: center;     /* WYŚRODKOWANIE W PIONIE (opcjonalnie) */
+  justify-content: center;
+  align-items: center;
 }
 
 canvas {
   width: 100% !important;
   height: 100% !important;
 }
-
