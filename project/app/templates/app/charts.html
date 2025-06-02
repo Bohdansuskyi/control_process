@@ -1,19 +1,40 @@
 {% extends "app/base.html" %}
 {% load static %}
 {% block title %} Chart page {% endblock %}
+{% block css %}<link rel="stylesheet" href="{% static 'app/css/charts.css' %}">{% endblock %}
 
 {% block content %}
 
-<div class='container-chart'>
-    <div class="canvas-container">
-      <canvas id="Charttemperature"></canvas>  
-    </div>
-</div>
+{% for station, data in station_data.items %}
 
-<!-- biblioteka chart js-->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
-<!-- własny chart js-->
-    <script src="{% static 'app/js/chart.js' %}"></script>
+  <div class="chart-wrap">
+    <h2>{{ station }}</h2>
+    <canvas id="chart-{{ forloop.counter }}"></canvas>
+  </div>
+  <script>
+    const ctx{{ forloop.counter }} = document.getElementById('chart-{{ forloop.counter }}').getContext('2d');
+    new Chart(ctx{{ forloop.counter }}, {
+      type: 'line',
+      data: {
+        labels: {{ data.times|safe }},
+        datasets: [{
+          label: 'Temperatura',
+          data: {{ data.temperatures|safe }},
+          borderColor: 'rgba(0, 102, 255, 1)',
+          fill: false
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+  </script>
+{% endfor %}
   
 {% endblock %}

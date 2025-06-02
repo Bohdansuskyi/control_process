@@ -7,11 +7,17 @@ class station(models.Model):
     station_identification_number = models.PositiveIntegerField(default=0)
     is_active = models.BooleanField(default=False)
 
+    def __str__(self):
+        return f"Stancja:{self.name}  MLX90614:{self.MLX90614_adress}  RFID:{self.RFID_adress}"
+
 
 class parts(models.Model):
     UID = models.CharField(max_length=20)
     EEPROM_description = models.TextField()
     part_identification_number = models.PositiveIntegerField(default=0)
+
+    def __str__(self):
+        return f"Numer detalu:{self.part_identification_number}  UID:{self.UID}"
 
 
 class records(models.Model):
@@ -20,3 +26,6 @@ class records(models.Model):
     temperature = models.FloatField()
     time = models.TimeField(auto_now=False,auto_now_add=False)
     Date = models.DateField(auto_now=False, auto_now_add=False)
+
+    def __str__(self):
+        return f"Stancja:{self.station}  Detal:{self.part}  Temperatura{self.temperature}  Czas:{self.time}  Data:{self.Date}"
