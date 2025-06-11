@@ -5,10 +5,16 @@
 
 {% block content %}
 
-{% for station, data in station_data.items %}
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
+  <div class="filters">
+  <a href="?filter=today" class="{% if selected_filter == 'today' %}active{% endif %}">Dzisiaj</a>
+  <a href="?filter=yesterday" class="{% if selected_filter == 'yesterday' %}active{% endif %}">Wczoraj</a>
+  <a href="?filter=all" class="{% if selected_filter == 'all' %}active{% endif %}">Cały czas</a>
+</div>
+
+{% for station, data in station_data.items %}
   <div class="chart-wrap">
     <h2>{{ station }}</h2>
     <canvas id="chart-{{ forloop.counter }}"></canvas>
@@ -36,5 +42,6 @@
     });
   </script>
 {% endfor %}
+
   
 {% endblock %}
