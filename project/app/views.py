@@ -10,7 +10,7 @@ def info(request):
 
 def charts(request):
     # Pobranie wszystkich rekordów posortowanych po stacji i czasie
-    data = records.objects.all().order_by('station__id', 'time')
+    data = records.objects.all().order_by('station__id', '-time')
 
     # Tworzenie słownika, gdzie klucz to nazwa stacji, a wartość to dane tej stacji
     station_data = {}
