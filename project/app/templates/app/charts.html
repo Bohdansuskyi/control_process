@@ -17,6 +17,7 @@
 {% for station, data in station_data.items %}
   <div class="chart-wrap">
     <h2>{{ station }}</h2>
+    
     <canvas id="chart-{{ forloop.counter }}"></canvas>
   </div>
   <script>

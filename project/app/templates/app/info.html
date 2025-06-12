@@ -8,8 +8,53 @@
 {% block content %}
 
 <div class='search-data'>
-  <label for="exampleDataList" class="form-label">Wpisz UID odlewu</label>
-<input class="form-control" list="datalistOptions" id="exampleDataList" placeholder="Wpisz, aby wyszukać...">
-  <button type="button" class="btn btn-primary btn-lg d-block mx-auto custom-button">Znajdź informacje</button>
+  <form method="get" action="{% url 'info' %}">
+    <label for="exampleDataList" class="form-label">Wpisz UID odlewu</label>
+    <input name="uid" class="form-control" list="datalistOptions" id="exampleDataList" placeholder="Wpisz, aby wyszukać..." value="{{ uid|default:'' }}">
+    <button type="submit" class="btn btn-primary btn-lg d-block mx-auto custom-button">Znajdź informacje</button>
+  </form>
 </div>
+
+{% if part %}
+  <h2 class="mt-4">Historia dla detalu: {{ part.part_identification_number }} (UID: {{ part.UID }})</h2>
+
+  {% if history %}
+    <table class="table table-striped mt-3">
+      <thead>
+        <tr>
+          <th>Stacja</th>
+          <th>Adres MLX90614</th>
+          <th>Temperatura [°C]</th>
+          <th>Czas</th>
+          <th>Data</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for record in history %}
+        <tr>
+          <td>{{ record.station.name }}</td>
+          <td>{{ record.station.MLX90614_adress }}</td>
+          <td>{{ record.temperature }}</td>
+          <td>{{ record.time }}</td>
+          <td>{{ record.Date }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <div class="alert alert-warning mt-4" role="alert">
+      Brak danych historycznych dla tego detalu.
+    </div>
+  {% endif %}
+
+{% endif %}  {# <-- to zamyka {% if part %} #}
+
+{% if messages %}
+  {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} mt-3" role="alert">
+      {{ message }}
+    </div>
+  {% endfor %}
+{% endif %}
+
 {% endblock %}

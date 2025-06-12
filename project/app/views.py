@@ -1,6 +1,9 @@
 from django.shortcuts import render
 from .models import parts, records, station
+from django.db.models import Max
 from datetime import date, timedelta
+from .forms import UIDSearchForm
+from django.contrib import messages
 
 
 #django rest_framework (API)
@@ -14,7 +17,30 @@ def index(request):
     return render(request,"app/index.html")
 
 def info(request):
-    return render(request,"app/info.html")
+    form = UIDSearchForm(request.GET or None)
+    history = []
+    part_obj = None
+
+    if form.is_valid():
+        uid = form.cleaned_data['uid']
+        try:
+            part_obj = parts.objects.get(UID=uid)
+            history = records.objects.filter(part=part_obj).order_by("Date", "time")
+
+            if not history:
+                messages.warning(request, "Brak danych historycznych dla tego detalu.")
+
+        except parts.DoesNotExist:
+            part_obj = None
+            messages.error(request, "Nie znaleziono detalu o takim UID.")
+
+    return render(request, "app/info.html", {
+        'form': form,
+        'part': part_obj,
+        'history': history,
+    })
+
+    
 
 
 def charts(request):
@@ -83,45 +109,55 @@ class RecordsListCreate(generics.ListCreateAPIView):
 
 class RecordsCreateView(APIView):
     def get(self, request):
-        station_name = request.GET.get('station')
+        mlx_adress = request.GET.get('MLX90614_adress')  # zamiast nazwy stacji
         part_uid = request.GET.get('part')
         temperature = request.GET.get('temperature')
 
-        if station_name and part_uid and temperature:
-            station_obj, _ = station.objects.get_or_create(
-                name=station_name,
-                defaults={
-                    'MLX90614_adress': '000000',
-                    'RFID_adress': '000000',
-                    'station_identification_number': 0,
-                    'is_active': False
-                }
+        if not (mlx_adress and part_uid and temperature):
+            return Response(
+                {"error": "Wymagane pola: MLX90614_adress, part (UID), temperature"},
+                status=status.HTTP_400_BAD_REQUEST
             )
 
-            part_obj, _ = parts.objects.get_or_create(
+        # SZUKANIE STACJI PO ADRESIE MLX90614
+        try:
+            station_obj = station.objects.get(MLX90614_adress=mlx_adress)
+        except station.DoesNotExist:
+            return Response(
+                {"error": f"Stacja z adresem MLX90614 '{mlx_adress}' nie istnieje"},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        # PRÓBA POBRANIA ISTNIEJĄCEJ CZĘŚCI
+        part_obj = parts.objects.filter(UID=part_uid).first()
+
+        if part_obj is None:
+            # OBLICZAMY KOLEJNY NUMER IDENTYFIKACYJNY
+            # szukanie ostatniego numeru identyfikacyjnego
+            last_number = parts.objects.aggregate(Max('part_identification_number'))['part_identification_number__max'] or 0
+
+            new_number = last_number + 1
+
+            part_obj = parts.objects.create(
                 UID=part_uid,
-                defaults={
-                    'EEPROM_description': '',
-                    'part_identification_number': 0
-                }
+                EEPROM_description='',
+                part_identification_number=new_number
             )
 
-            now = datetime.now()
+        now = datetime.now()
 
-            record_data = {
-                'station': station_obj.id,
-                'part': part_obj.id,
-                'temperature': temperature,
-                'time': now.strftime("%H:%M:%S"),     # tutaj string
-                'Date': now.strftime("%Y-%m-%d"),     # i tu też
-            }
+        record_data = {
+            'station': station_obj.id,
+            'part': part_obj.id,
+            'temperature': temperature,
+            'time': now.strftime("%H:%M:%S"),
+            'Date': now.strftime("%Y-%m-%d"),
+        }
 
-            serializer = RecordsSerializer(data=record_data)
+        serializer = RecordsSerializer(data=record_data)
 
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
-            else:
-                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-        return Response({"error": "Wymagane pola: station (name), part (UID), temperature"}, status=status.HTTP_400_BAD_REQUEST)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
