@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import station,parts,records
 
-# convert data from json to float, ...
+# convert data from json to float, string, ..
 
 class StationSerializer(serializers.ModelSerializer):
     class Meta:

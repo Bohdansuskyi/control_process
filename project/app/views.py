@@ -6,7 +6,7 @@ from .forms import UIDSearchForm
 from django.contrib import messages
 
 
-#django rest_framework (API)
+# django rest_framework (API)
 from rest_framework import generics, status
 from rest_framework.response import Response
 from .serializers import StationSerializer,RecordsSerializer
@@ -47,7 +47,7 @@ def charts(request):
     date_filter = request.GET.get('filter', 'all')
 
     queryset = records.objects.all()
-
+    # filter
     if date_filter == 'today':
         queryset = queryset.filter(Date=date.today())
     elif date_filter == 'yesterday':
@@ -72,20 +72,22 @@ def charts(request):
         'selected_filter': date_filter
     })
 
-# API
+## API
 
+# list of all positions Station from the database
 class StationListCreate(generics.ListCreateAPIView):
     queryset = station.objects.all()
     serializer_class = StationSerializer
 
+# endpoint for Station
 class StationCreateView(APIView):
-    # GET get the parameters from the URL
+    # GET retrieves parameters from a URL
     def get(self,request):
         MLX90614_adress = request.GET.get('MLX90614_adress')
         RFID_adress = request.GET.get('RFID_adress')
 
         if MLX90614_adress and RFID_adress:
-            # Logic for data processing
+            
             station_data = {
                 'MLX90614_adress':MLX90614_adress,
                 'RFID_adress':RFID_adress
@@ -94,22 +96,22 @@ class StationCreateView(APIView):
             serializer = StationSerializer(data=station_data)
 
             if serializer.is_valid():
-                serializer.save() # Save the data to the database
+                serializer.save() # Saves data to the database
                 return Response(serializer.data,status=status.HTTP_201_CREATED)
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             
-        return Response({"error":"MLX90614_adress and RFID_adress are required."},status=status.HTTP_400_BAD_REQUEST)
+        return Response({"error":"MLX90614_adress oraz RFID_adress są wymagane."},status=status.HTTP_400_BAD_REQUEST)
     
-
+# list of all records for records
 class RecordsListCreate(generics.ListCreateAPIView):
     queryset = records.objects.all()
     serializer_class = RecordsSerializer
 
-
+# endpoint for Records
 class RecordsCreateView(APIView):
     def get(self, request):
-        mlx_adress = request.GET.get('MLX90614_adress')  # zamiast nazwy stacji
+        mlx_adress = request.GET.get('MLX90614_adress')  
         part_uid = request.GET.get('part')
         temperature = request.GET.get('temperature')
 
@@ -118,8 +120,8 @@ class RecordsCreateView(APIView):
                 {"error": "Wymagane pola: MLX90614_adress, part (UID), temperature"},
                 status=status.HTTP_400_BAD_REQUEST
             )
-
-        # SZUKANIE STACJI PO ADRESIE MLX90614
+        
+        # searching for a Station by address MLX90614
         try:
             station_obj = station.objects.get(MLX90614_adress=mlx_adress)
         except station.DoesNotExist:
@@ -128,12 +130,11 @@ class RecordsCreateView(APIView):
                 status=status.HTTP_404_NOT_FOUND
             )
 
-        # PRÓBA POBRANIA ISTNIEJĄCEJ CZĘŚCI
+        # retrieves data about existing parts
         part_obj = parts.objects.filter(UID=part_uid).first()
 
         if part_obj is None:
-            # OBLICZAMY KOLEJNY NUMER IDENTYFIKACYJNY
-            # szukanie ostatniego numeru identyfikacyjnego
+            # if there is no such part, it adds a new one with the changed part_identification_number
             last_number = parts.objects.aggregate(Max('part_identification_number'))['part_identification_number__max'] or 0
 
             new_number = last_number + 1
@@ -144,6 +145,7 @@ class RecordsCreateView(APIView):
                 part_identification_number=new_number
             )
 
+        # retrieves the current time at the time of assigning data to the database
         now = datetime.now()
 
         record_data = {
