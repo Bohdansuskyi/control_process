@@ -9,7 +9,7 @@ from django.contrib import messages
 # django rest_framework (API)
 from rest_framework import generics, status
 from rest_framework.response import Response
-from .serializers import StationSerializer,RecordsSerializer
+from .serializers import RecordsSerializer
 from rest_framework.views import APIView
 from datetime import datetime
 
@@ -74,34 +74,6 @@ def charts(request):
 
 ## API
 
-# list of all positions Station from the database
-class StationListCreate(generics.ListCreateAPIView):
-    queryset = station.objects.all()
-    serializer_class = StationSerializer
-
-# endpoint for Station
-class StationCreateView(APIView):
-    # GET retrieves parameters from a URL
-    def get(self,request):
-        MLX90614_adress = request.GET.get('MLX90614_adress')
-        RFID_adress = request.GET.get('RFID_adress')
-
-        if MLX90614_adress and RFID_adress:
-            
-            station_data = {
-                'MLX90614_adress':MLX90614_adress,
-                'RFID_adress':RFID_adress
-            }
-
-            serializer = StationSerializer(data=station_data)
-
-            if serializer.is_valid():
-                serializer.save() # Saves data to the database
-                return Response(serializer.data,status=status.HTTP_201_CREATED)
-            else:
-                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-            
-        return Response({"error":"MLX90614_adress oraz RFID_adress są wymagane."},status=status.HTTP_400_BAD_REQUEST)
     
 # list of all records for records
 class RecordsListCreate(generics.ListCreateAPIView):
