@@ -3,12 +3,9 @@ from django.db import models
 class station(models.Model):
     name = models.CharField(max_length=50)
     MLX90614_adress = models.CharField(max_length=6)
-    RFID_adress = models.CharField(max_length=6)
-    station_identification_number = models.PositiveIntegerField(default=0)
-    is_active = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"Stancja:{self.name}  MLX90614:{self.MLX90614_adress}  RFID:{self.RFID_adress}"
+        return f"Stancja:{self.name}  MLX90614:{self.MLX90614_adress}"
 
 
 class parts(models.Model):

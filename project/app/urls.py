@@ -11,5 +11,7 @@ urlpatterns = [
     path("records/",views.RecordsListCreate.as_view(),name="records-view-create"),
     
     # endpoints
-    path("create-records/",RecordsCreateView.as_view(),name="records-create")
+    path("create-records/",RecordsCreateView.as_view(),name="records-create"),
+    path('api/check_update/', views.check_data_update, name='check_data_update'),
+
 ]

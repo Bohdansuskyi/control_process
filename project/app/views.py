@@ -1,10 +1,10 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import parts, records, station
 from django.db.models import Max
 from datetime import date, timedelta
 from .forms import UIDSearchForm
 from django.contrib import messages
-
+from django.http import JsonResponse
 
 # django rest_framework (API)
 from rest_framework import generics, status
@@ -12,6 +12,9 @@ from rest_framework.response import Response
 from .serializers import RecordsSerializer
 from rest_framework.views import APIView
 from datetime import datetime
+
+new_data_flag = False
+
 
 def index(request):
     return render(request,"app/index.html")
@@ -40,7 +43,11 @@ def info(request):
         'history': history,
     })
 
-    
+def check_data_update(request):
+    global new_data_flag
+    response = {'new': new_data_flag}
+    new_data_flag = False  # resetujemy flagę po odczytaniu
+    return JsonResponse(response)
 
 
 def charts(request):
@@ -83,6 +90,7 @@ class RecordsListCreate(generics.ListCreateAPIView):
 # endpoint for Records
 class RecordsCreateView(APIView):
     def get(self, request):
+        global new_data_flag
         mlx_adress = request.GET.get('MLX90614_adress')  
         part_uid = request.GET.get('part')
         temperature = request.GET.get('temperature')
@@ -132,6 +140,8 @@ class RecordsCreateView(APIView):
 
         if serializer.is_valid():
             serializer.save()
+            new_data_flag = True
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+

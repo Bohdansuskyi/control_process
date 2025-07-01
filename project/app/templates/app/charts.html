@@ -33,13 +33,26 @@
         }]
       },
       options: {
+        responsive:true,
         scales: {
           y: {
-            beginAtZero: true
+            beginAtZero: true,
+            title: {
+              display: true,
+              text: 'Temperatura °C'
+            }
+          },
+          x: {
+            title: {
+              display: true,
+              text: 'Czas'
+            }
           }
         }
       }
     });
+
+
   </script>
 {% endfor %}
 

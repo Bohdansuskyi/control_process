@@ -22,22 +22,7 @@
             <a class="nav-link {% if request.path == '/charts/' %}active{% endif %}" href="{% url 'charts' %}">Wykresy temperatury</a>
         </li>
     </ul>
-
-    <div class="container mt-4 centered-box">
-      <label for="refreshInterval">Wybierz interwał odświeżania stron</label>
-      <select class="form-select small-select" id="refreshInterval">
-          <option value="0">Wyłącz</option>
-          <option value="5000">Co 5 sekund</option>
-          <option value="10000">Co 10 sekund</option>
-          <option value="60000">Co 1 minuta</option>
-      </select>
-  </div>
     
-  <!-- <div class="alert centered-box">
-    <div id="alertBox" class="alert alert-danger d-none" role="alert">
-      Uwaga! Temperatura przekroczyła bezpieczny limit!
-    </div>
-  </div> -->
 
     {% block content %}
     {% endblock %}
