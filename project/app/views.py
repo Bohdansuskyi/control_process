@@ -1,10 +1,11 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import parts, records, station
 from django.db.models import Max
 from datetime import date, timedelta
 from .forms import UIDSearchForm
 from django.contrib import messages
 from django.http import JsonResponse
+from django.utils.timezone import make_aware
 
 # django rest_framework (API)
 from rest_framework import generics, status
@@ -17,7 +18,15 @@ new_data_flag = False
 
 
 def index(request):
-    return render(request,"app/index.html")
+    last_record = records.objects.last()  # ostatni wpis
+    last_activity = None
+    if last_record:
+        dt = datetime.combine(last_record.Date, last_record.time)
+        last_activity = make_aware(dt)  # żeby mieć pełny datetime
+
+    return render(request, "app/index.html", {
+        "last_activity": last_activity
+    })
 
 def info(request):
     form = UIDSearchForm(request.GET or None)

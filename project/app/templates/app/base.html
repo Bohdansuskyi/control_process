@@ -21,6 +21,23 @@
         <li class="nav-item">
             <a class="nav-link {% if request.path == '/charts/' %}active{% endif %}" href="{% url 'charts' %}">Wykresy temperatury</a>
         </li>
+        <li class="nav-item">
+    <a class="nav-link {% if '/admin' in request.path %}active{% endif %}" href="{% url 'admin:index' %}">Panel administracyjny</a>
+</li>
+
+        <li class="nav-item ms-3">
+            <span class="nav-link disabled" id="clock"></span>
+        </li>
+        <li class="nav-item ms-3">
+        <span class="nav-link disabled">
+          Ostatnia aktywność: 
+          {% if last_activity %}
+              {{ last_activity|date:"d-m-Y H:i:s" }}
+          {% else %}
+              brak danych
+          {% endif %}
+        </span>
+    </li>
     </ul>
     
 

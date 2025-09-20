@@ -1,8 +1,10 @@
 from django.urls import path
+from django.contrib import admin
 from . import views
 from .views import RecordsCreateView
 
 urlpatterns = [
+    path('admin/', admin.site.urls),
     path('', views.index, name='index'),
     path('info/', views.info, name='info'),
     path('charts/', views.charts, name='charts'),
