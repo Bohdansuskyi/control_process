@@ -1,20 +1,86 @@
 {% extends "app/base.html" %}
-
+{% load static %}
 {% block title %} Home page {% endblock %}
+
+{% block css %}<link rel="stylesheet" href="{% static 'app/css/index.css' %}">{% endblock %}
 
 {% block content %}
 
-<div class='container-parameters centered-box'>
-  <div class="input-group mb-3">
-  <span class="input-group-text">Górny próg temperatury dopuszczalnej</span>
-  <input type="text" class="form-control" aria-label="Dollar amount (with dot and two decimal places)">
-    <span class="input-group-text">℃</span>
+<div class="container-parameters centered-box">
+  <form method="get" action="{% url 'index' %}">
+    <div class="input-group mb-3">
+      <span class="input-group-text">Górny próg temperatury dopuszczalnej</span>
+      <input type="text" name="max_temp" class="form-control" placeholder="np. 18" value="{{ max_temp|default:'' }}">
+      <span class="input-group-text">℃</span>
+    </div>
+    <div class="input-group mb-3">
+      <span class="input-group-text">Dolny próg temperatury dopuszczalnej</span>
+      <input type="text" name="min_temp" class="form-control" placeholder="np. 15" value="{{ min_temp|default:'' }}">
+      <span class="input-group-text">℃</span>
+    </div>
+    <button type="submit" class="btn btn-primary btn-lg d-block mx-auto custom-button">Zatwierdź wybór</button>
+  </form>
 </div>
-  <div class="input-group mb-3">
-  <span class="input-group-text">Dolny próg temperatury dopuszczalnej</span>
-  <input type="text" class="form-control" aria-label="Dollar amount (with dot and two decimal places)">
-    <span class="input-group-text">℃</span>
-</div>
-  <button type="button" class="btn btn-primary btn-lg d-block mx-auto custom-button">Zatwierdzić wybór</button>
-</div>
+
+{% if history_in_range %}
+  <h3 class="mt-4">Rekordy w zakresie</h3>
+  <table class="table table-striped mt-3">
+    <thead>
+      <tr>
+        <th>Stacja</th>
+        <th>Adres MLX90614</th>
+        <th>Temperatura [°C]</th>
+        <th>Czas</th>
+        <th>Data</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for record in history_in_range %}
+      <tr>
+        <td>{{ record.station.name }}</td>
+        <td>{{ record.station.MLX90614_adress }}</td>
+        <td>{{ record.temperature }}</td>
+        <td>{{ record.time }}</td>
+        <td>{{ record.Date }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endif %}
+
+{% if history_out_range %}
+  <h3 class="mt-4">Rekordy poza zakresem</h3>
+  <table class="table table-bordered mt-3">
+    <thead>
+      <tr>
+        <th>Stacja</th>
+        <th>Adres MLX90614</th>
+        <th>Temperatura [°C]</th>
+        <th>Czas</th>
+        <th>Data</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for record in history_out_range %}
+      <tr>
+        <td>{{ record.station.name }}</td>
+        <td>{{ record.station.MLX90614_adress }}</td>
+        <td>{{ record.temperature }}</td>
+        <td>{{ record.time }}</td>
+        <td>{{ record.Date }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endif %}
+
+{% if messages %}
+  {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} mt-3" role="alert">
+      {{ message }}
+    </div>
+  {% endfor %}
+{% endif %}
+
+
 {% endblock %}

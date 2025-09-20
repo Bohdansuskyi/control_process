@@ -11,3 +11,20 @@ class UIDSearchForm(forms.Form):
             'placeholder': 'Wpisz, aby wyszukać...'
         })
     )
+
+
+class TemperatureThresholdForm(forms.Form):
+    max_temp = forms.FloatField(
+        label="Górny próg temperatury dopuszczalnej",
+        widget=forms.NumberInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'np. 18'
+        })
+    )
+    min_temp = forms.FloatField(
+        label="Dolny próg temperatury dopuszczalnej",
+        widget=forms.NumberInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'np. 15'
+        })
+    )

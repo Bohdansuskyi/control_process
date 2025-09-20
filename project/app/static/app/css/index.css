@@ -1,0 +1,16 @@
+.tables-container {
+  max-width: 1000px;   /* szerokość maksymalna */
+  margin: 40px auto;   /* odstęp od góry/dół i wyśrodkowanie w poziomie */
+  padding: 20px;       /* odstęp wewnętrzny od krawędzi kontenera */
+}
+
+.custom-table {
+  width: 100%;
+  text-align: center;
+  vertical-align: middle;
+  border-radius: 8px;  /* lekko zaokrąglone rogi */
+}
+
+.custom-table th, .custom-table td {
+  padding: 10px;
+}

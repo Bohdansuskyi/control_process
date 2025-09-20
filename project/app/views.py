@@ -6,6 +6,7 @@ from .forms import UIDSearchForm
 from django.contrib import messages
 from django.http import JsonResponse
 from django.utils.timezone import make_aware
+from .forms import TemperatureThresholdForm
 
 # django rest_framework (API)
 from rest_framework import generics, status
@@ -18,15 +19,45 @@ new_data_flag = False
 
 
 def index(request):
-    last_record = records.objects.last()  # ostatni wpis
-    last_activity = None
-    if last_record:
-        dt = datetime.combine(last_record.Date, last_record.time)
-        last_activity = make_aware(dt)  # żeby mieć pełny datetime
+    form = TemperatureThresholdForm(request.GET or None)
+    max_temp = None
+    min_temp = None
+    history_in_range = []
+    history_out_range = []
+
+    if form.is_valid():
+        max_temp = form.cleaned_data['max_temp']
+        min_temp = form.cleaned_data['min_temp']
+
+        if min_temp >= max_temp:
+            messages.error(request, "Dolny próg musi być mniejszy od górnego.")
+        else:
+            history_in_range = records.objects.filter(
+                temperature__gte=min_temp,
+                temperature__lte=max_temp
+            ).order_by("Date", "time")
+
+            history_out_range = records.objects.exclude(
+                temperature__gte=min_temp,
+                temperature__lte=max_temp
+            ).order_by("Date", "time")
+
+            if not history_in_range:
+                messages.warning(request, "Brak danych w podanym zakresie temperatur.")
+            else:
+                messages.success(
+                    request,
+                    f"Znaleziono {history_in_range.count()} rekordów w zakresie {min_temp}℃ - {max_temp}℃"
+                )
 
     return render(request, "app/index.html", {
-        "last_activity": last_activity
+        'form': form,
+        'max_temp': max_temp,
+        'min_temp': min_temp,
+        'history_in_range': history_in_range,
+        'history_out_range': history_out_range,
     })
+
 
 def info(request):
     form = UIDSearchForm(request.GET or None)
