@@ -1,47 +1,26 @@
-// skrypt alarmu przekroczenia limitów temperatury
-/*let temperatura; // dodam wartości temperatury
-        let limit; // dodam limity
 
-        function Temperature_check(temp) {
-            const alertBox = document.getElementById('alertBox');
-            if (temp > limit) {
-                alertBox.classList.remove('d-none');
-            } else {
-                alertBox.classList.add('d-none');
+// skrypt odświeżania tylko gdy są nowe dane
+setInterval(function() {
+    fetch("/api/check_update/")
+        .then(response => response.json())
+        .then(data => {
+            if (data.new) {
+                window.location.reload();
             }
-        }
+        })
+        .catch(err => console.error("Błąd podczas sprawdzania aktualizacji:", err));
+}, 5000); // co 5 sekund
 
-Temperature_check(temperatura);
-*/
+// Aktualna data i czas w navbarze
+function updateClock() {
+    const now = new Date();
+    const dateString = now.toLocaleDateString('pl-PL');
+    const timeString = now.toLocaleTimeString('pl-PL');
 
-// skrypt odświeżania stron
-let refreshTimer = null;
-        const select = document.getElementById('refreshInterval');
-
-        // Wczytanie zapisanego interwału z localStorage
-        const savedInterval = localStorage.getItem('refreshInterval');
-        if (savedInterval) {
-            select.value = savedInterval;
-            startTimer(parseInt(savedInterval));
-        }
-
-        select.addEventListener('change', function() {
-            if (refreshTimer) {
-                clearInterval(refreshTimer);
-            }
-
-            const interval = parseInt(this.value);
-
-            // Zapisz wybraną wartość do localStorage
-            localStorage.setItem('refreshInterval', interval);
-
-            startTimer(interval);
-        });
-
-        function startTimer(interval) {
-            if (interval > 0) {
-                refreshTimer = setInterval(() => {
-                    location.reload();
-                }, interval);
-            }
-        }
+    const clockEl = document.getElementById('clock');
+    if (clockEl) {
+        clockEl.textContent = `${dateString} ${timeString}`;
+    }
+}
+setInterval(updateClock, 1000);
+updateClock();
