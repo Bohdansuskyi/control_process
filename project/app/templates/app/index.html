@@ -40,8 +40,8 @@
         <td>{{ record.station.name }}</td>
         <td>{{ record.station.MLX90614_adress }}</td>
         <td>{{ record.temperature }}</td>
-        <td>{{ record.time }}</td>
-        <td>{{ record.Date }}</td>
+        <td>{{ record.time|time:"H:i" }}</td>
+        <td>{{ record.Date|date:"j E Y" }}</td>
       </tr>
       {% endfor %}
     </tbody>
@@ -66,8 +66,8 @@
         <td>{{ record.station.name }}</td>
         <td>{{ record.station.MLX90614_adress }}</td>
         <td>{{ record.temperature }}</td>
-        <td>{{ record.time }}</td>
-        <td>{{ record.Date }}</td>
+        <td>{{ record.time|time:"H:i" }}</td>
+        <td>{{ record.Date|date:"j E Y" }}</td>
       </tr>
       {% endfor %}
     </tbody>
