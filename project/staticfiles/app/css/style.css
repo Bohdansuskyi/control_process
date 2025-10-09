@@ -1,13 +1,12 @@
 /* Podstawowe ustawienia */
 body {
-    background-color: #f1f3f5;
+    background: linear-gradient(135deg, #e0e7ff, #fef9c3);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: #212529;
+    color: #222;
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
-
 *, *::before, *::after {
     box-sizing: inherit;
 }
@@ -77,12 +76,6 @@ body {
     background-color: #343a40;
 }
 
-/* Alert */
-.alert {
-    background-color: #ffe0e0;
-    border: 1px solid #f5c2c7;
-    color: #842029;
-}
 
 /* Stopka */
 footer {
