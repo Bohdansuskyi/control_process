@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import records
 
-# convert data from json to float, string, ..
+# konwertuje dane z formatu json na formarty czytelne dla aplikacji
 
 
 

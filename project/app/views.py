@@ -17,7 +17,7 @@ from datetime import datetime
 
 new_data_flag = False
 
-
+# deklaracja widoku który podaje pomiary z progami temperatur
 def index(request):
     form = TemperatureThresholdForm(request.GET or None)
     max_temp = None
@@ -25,6 +25,7 @@ def index(request):
     history_in_range = []
     history_out_range = []
 
+    # walidacja zadanych temperatur
     if form.is_valid():
         max_temp = form.cleaned_data['max_temp']
         min_temp = form.cleaned_data['min_temp']
@@ -58,7 +59,7 @@ def index(request):
         'history_out_range': history_out_range,
     })
 
-
+# deklaracja widoku z wyszukiwarką dla konkretnego detalu
 def info(request):
     form = UIDSearchForm(request.GET or None)
     history = []
@@ -82,14 +83,14 @@ def info(request):
         'part': part_obj,
         'history': history,
     })
-
+# Sprawdza, czy pojawiły się nowe dane do odświeżenia strony
 def check_data_update(request):
     global new_data_flag
     response = {'new': new_data_flag}
     new_data_flag = False  # resetujemy flagę po odczytaniu
     return JsonResponse(response)
 
-
+# deklaracja widoku z wykresami
 def charts(request):
     date_filter = request.GET.get('filter', 'all')
 
@@ -122,12 +123,12 @@ def charts(request):
 ## API
 
     
-# list of all records for records
+# lista wszystkich rekordów dla rekordów
 class RecordsListCreate(generics.ListCreateAPIView):
     queryset = records.objects.all()
     serializer_class = RecordsSerializer
 
-# endpoint for Records
+# punkt końcowy w API dla rekordów
 class RecordsCreateView(APIView):
     def get(self, request):
         global new_data_flag
@@ -141,7 +142,7 @@ class RecordsCreateView(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
         
-        # searching for a Station by address MLX90614
+        # wyszukiwanie stacji według adresu MLX90614
         try:
             station_obj = station.objects.get(MLX90614_adress=mlx_adress)
         except station.DoesNotExist:
@@ -150,11 +151,11 @@ class RecordsCreateView(APIView):
                 status=status.HTTP_404_NOT_FOUND
             )
 
-        # retrieves data about existing parts
+        # pobiera dane o istniejących częściach
         part_obj = parts.objects.filter(UID=part_uid).first()
 
         if part_obj is None:
-            # if there is no such part, it adds a new one with the changed part_identification_number
+            # jeśli nie ma takiej części, dodaje nową ze zmienionym numerem identyfikacyjnym części
             last_number = parts.objects.aggregate(Max('part_identification_number'))['part_identification_number__max'] or 0
 
             new_number = last_number + 1
@@ -165,7 +166,7 @@ class RecordsCreateView(APIView):
                 part_identification_number=new_number
             )
 
-        # retrieves the current time at the time of assigning data to the database
+        # pobiera aktualny czas w momencie przypisywania danych do bazy danych
         now = datetime.now()
 
         record_data = {

@@ -11,7 +11,7 @@ setInterval(function() {
         .catch(err => console.error("Błąd podczas sprawdzania aktualizacji:", err));
 }, 5000); // co 5 sekund
 
-// Aktualna data i czas w navbarze
+// Aktualna data i czas w górnym pasku
 function updateClock() {
     const now = new Date();
     const dateString = now.toLocaleDateString('pl-PL');

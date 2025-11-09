@@ -1,7 +1,7 @@
 
 from django import forms
 
-# form for searching UID from database
+# formularz do wyszukiwania UID w bazie danych
 class UIDSearchForm(forms.Form):
     uid = forms.CharField(
         max_length=20,
@@ -12,7 +12,7 @@ class UIDSearchForm(forms.Form):
         })
     )
 
-
+#formularz do wpisywania parametrów na stronie z parametrami
 class TemperatureThresholdForm(forms.Form):
     max_temp = forms.FloatField(
         label="Górny próg temperatury dopuszczalnej",
